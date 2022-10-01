@@ -1,0 +1,13 @@
+#include "l1-domain/behavior/driving/PlanTravelRoute.h"
+#include "l1-domain/interface/driving/Copilot.h"
+
+CDA_NS_BEGIN
+
+Status PlanTravelRoute::execute()
+{
+    I(Copilot).routePlan();
+
+    return CUB_SUCCESS;
+}
+
+CDA_NS_END
