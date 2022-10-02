@@ -1,23 +1,24 @@
-//
-// Created by Darwin Yuan on 2020/6/6.
-//
+/*
+ * EventId.h
+ *
+ * Created on: Apr 21, 2013, 2013
+ *     author: Darwin Yuan
+ *
+ * Copyright 2013 ThoughtWorks, All Rights Reserved.
+ *
+ */ 
 
-#ifndef TRANS_DSL_2_EVENTID_H
-#define TRANS_DSL_2_EVENTID_H
+#ifndef EVENTID_H_
+#define EVENTID_H_
 
-#include <event/event_ns.h>
-#include <cstdint>
+#include <l4-infra/event/event.h>
 
 EV_NS_BEGIN
 
-using EventId = uint16_t;
+typedef unsigned short EventId;
 
-constexpr EventId INVALID_EVENT_ID = 0;
-
-constexpr bool is_invalid_event(EventId eventId) {
-   return eventId == INVALID_EVENT_ID;
-}
+const EventId INVALID_EVENT_ID = 0xFFFF;
 
 EV_NS_END
 
-#endif //TRANS_DSL_2_EVENTID_H
+#endif /* EVENTID_H_ */

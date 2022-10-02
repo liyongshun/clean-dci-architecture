@@ -1,53 +1,40 @@
-//
-// Created by Darwin Yuan on 2020/7/7.
-//
+/*
+ * WithIdHelper.h
+ *
+ * Created on: May 28, 2013
+ *     author: Darwin Yuan
+ *
+ * Copyright 2013 ThoughtWorks, All Rights Reserved.
+ *
+ */ 
 
-#ifndef TRANS_DSL_2_WITHIDHELPER_H
-#define TRANS_DSL_2_WITHIDHELPER_H
+#ifndef WITHIDHELPER_H_
+#define WITHIDHELPER_H_
 
-#include <trans-dsl/sched/action/SchedWithId.h>
-#include <trans-dsl/sched/domain/TransListenerObservedAids.h>
-#include <trans-dsl/sched/helper/ActionRealTypeTraits.h>
+#include <l4-infra/trans-dsl/sched/action/SchedWithIdAction.h>
 
 TSL_NS_BEGIN
 
-namespace details {
-   template<ActionId AID, typename ACTION>
-   class WithId final  {
-      template<TransListenerObservedAids const& AIDs>
-      using Action = ActionRealTypeTraits_t<AIDs, ACTION>;
+namespace details
+{
+   template <ActionId I_ACTION_ID, typename T_ACTION>
+   struct WITH_ID__ : SchedWithIdAction
+   {
+   private:
+      OVERRIDE(ActionId getActionId() const)
+      {
+         return I_ACTION_ID;
+      }
 
-      template<TransListenerObservedAids const& AIDs>
-      class Used : public SchedWithId {
-         OVERRIDE(getActionId() const -> ActionId) { return AID; }
-         IMPL_ROLE_WITH_VAR(SchedAction, action);
-         Action<AIDs> action;
-      };
-
-      template<TransListenerObservedAids const& AIDs, bool>
-      struct Trait {
-         using type = Action<AIDs>;
-      };
-
-      template<TransListenerObservedAids const& AIDs>
-      struct Trait<AIDs, true>  {
-         using type = Used<AIDs>;
-      };
-   public:
-      template<TransListenerObservedAids const& AIDs>
-      struct ActionRealType : Trait<AIDs, AIDs.isEnabled(AID)>::type {
-         using ThreadActionCreator = ThreadCreator_t<Action<AIDs>>;
-      };
+      IMPL_ROLE_WITH_VAR(SchedAction, T_ACTION);
    };
-
-   template<ActionId AID, typename ACTION>
-   using WithId_t = typename WithId<AID, ACTION>::template ActionRealType<EmptyAids>;
-}
+};
 
 TSL_NS_END
 
-#define __with_id(aid, ...) TSL_NS::details::WithId<aid, TSL_NS::details::AutoAction::SequentialTrait_t<__VA_ARGS__>>
-#define __def_with_id(aid, ...) TSL_NS::details::WithId_t<aid, TSL_NS::details::AutoAction::SequentialTrait_t<__VA_ARGS__>>
+///////////////////////////////////////////////////////////////
+#define __with_id(...) TSL_NS::details::WITH_ID__< __VA_ARGS__ >
 
+///////////////////////////////////////////////////////////////
 
-#endif //TRANS_DSL_2_WITHIDHELPER_H
+#endif /* WITHIDHELPER_H_ */

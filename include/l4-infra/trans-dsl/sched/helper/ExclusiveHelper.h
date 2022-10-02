@@ -1,33 +1,67 @@
-//
-// Created by Darwin Yuan on 2021/3/22.
-//
+/*
+ * ExclusiveHelper.h
+ *
+ * Created on: Apr 28, 2013
+ *     author: Darwin Yuan
+ *
+ * Copyright 2013 ThoughtWorks, All Rights Reserved.
+ *
+ */ 
 
-#ifndef TRANS_DSL_2_EXCLUSIVEHELPER_H
-#define TRANS_DSL_2_EXCLUSIVEHELPER_H
+#ifndef EXCLUSIVEHELPER_H_
+#define EXCLUSIVEHELPER_H_
 
-#include <trans-dsl/sched/helper/MultiAction.h>
-#include <trans-dsl/sched/action/SchedExclusive.h>
-#include <trans-dsl/sched/domain/TransListenerObservedAids.h>
+#include <l4-infra/trans-dsl/sched/action/SchedExclusiveAction.h>
+#include <l4-infra/trans-dsl/sched/helper/LinkedHelper.h>
+#include <l4-infra/trans-dsl/utils/ActionMacroHelper.h>
 
 TSL_NS_BEGIN
 
-struct SchedAction;
+////////////////////////////////////////////////////////////////
+#define __EXCLUSIVE_ADD_ACTION(n)  addAction(action ## n);
+#define EXCLUSIVE_ADD_ACTION(n)    SIMPLE_REPEAT(n, __EXCLUSIVE_ADD_ACTION)
 
-namespace details {
-
-    template<typename ... T_ACTIONS>
-    struct Exclusive final  : MultiAction<SchedExclusive, T_ACTIONS...>{
-        static constexpr size_t Num_Of_Actions = sizeof...(T_ACTIONS);
-        static_assert(Num_Of_Actions >= 2, "# of exclusive actions should be at least 2");
-    };
-
-    template<typename ... Ts>
-    using Exclusive_t = typename Exclusive<Ts...>::template ActionRealType<EmptyAids>;
+////////////////////////////////////////////////////////////////
+#define __EXCLUSIVE_PARTIAL_COLLECTION(n)                          \
+namespace details {                                                \
+template < DECL_TEMPLATE_ARGS(n)>                                  \
+struct ExclusiveActions __PARTIAL_5_##n(ACTION_ARGS, DUMMY_ARGS)   \
+   : SchedExclusiveAction                                          \
+{                                                                  \
+   ExclusiveActions()                                              \
+   { EXCLUSIVE_ADD_ACTION(n) }                                     \
+private:                                                           \
+    DECL_MEMBERS(n)                                                \
+};                                                                 \
 }
 
-#define __exclusive(...) TSL_NS::details::Exclusive<__VA_ARGS__>
-#define __def_exclusive(...) TSL_NS::details::Exclusive_t<__VA_ARGS__>
+
+__EXCLUSIVE_PARTIAL_COLLECTION(5)
+__EXCLUSIVE_PARTIAL_COLLECTION(4)
+__EXCLUSIVE_PARTIAL_COLLECTION(3)
+__EXCLUSIVE_PARTIAL_COLLECTION(2)
+__EXCLUSIVE_PARTIAL_COLLECTION(1)
+
+
+/////////////////////////////////////////////////////////////////////////////////
+#define __DEF_GENERIC_EXCLUSIVE_ACTION(n)         \
+namespace details {                               \
+   template <DECL_DUMMY_DEFAULT(n)>               \
+   struct EXCLUSIVE__                             \
+        : ExclusiveActions<DECL_ALL_ARGS(n)>      \
+   {                                              \
+   };                                             \
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+__DEF_GENERIC_EXCLUSIVE_ACTION(5);
+
+/////////////////////////////////////////////////////////////////////////////////
+#define __exclusive(...) \
+       TSL_NS::details::EXCLUSIVE__< __VA_ARGS__ >
+
+/////////////////////////////////////////////////////////////////////////////////
 
 TSL_NS_END
 
-#endif //TRANS_DSL_2_EXCLUSIVEHELPER_H
+#endif /* EXCLUSIVEHELPER_H_ */

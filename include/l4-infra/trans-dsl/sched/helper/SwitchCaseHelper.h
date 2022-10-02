@@ -1,63 +1,64 @@
-//
-// Created by Darwin Yuan on 2020/6/15.
-//
+/*
+ * SwitchCaseHelper.h
+ *
+ * Created on: Apr 22, 2013
+ *     author: Darwin Yuan
+ *
+ * Copyright 2013 ThoughtWorks, All Rights Reserved.
+ *
+ */ 
 
-#ifndef TRANS_DSL_2_SWITCHCASEHELPER_H
-#define TRANS_DSL_2_SWITCHCASEHELPER_H
+#ifndef SWITCHCASEHELPER_H_
+#define SWITCHCASEHELPER_H_
 
-#include <trans-dsl/sched/action/SchedSwitchCase.h>
-#include <trans-dsl/sched/helper/ActionPathHelper.h>
-#include <trans-dsl/sched/helper/VolatileSeq.h>
-#include <trans-dsl/utils/ThreadActionTrait.h>
+#include <l4-infra/trans-dsl/sched/action/ActionPath.h>
+
+#ifdef __GXX_EXPERIMENTAL_CXX0X__
+#include <l4-infra/trans-dsl/sched/helper/11/SwitchCase11.h>
+#else
+#include <l4-infra/trans-dsl/sched/helper/98/SwitchCase98.h>
+#endif
 
 TSL_NS_BEGIN
 
-namespace details {
+namespace details
+{
+   template <typename PRED, typename T_ACTION>
+   struct CASE__ : ActionPath
+   {
+      OVERRIDE(bool shouldExecute(const TransactionInfo& info))
+      {
+         return pred(info);
+      }
 
-   template<typename T>
-   DEF_CONCEPT(ActionPathConcept, std::is_base_of_v<ActionPath, T>);
+      OVERRIDE(SchedAction& getAction())
+      {
+         return action;
+      }
 
-   // 24 bytes
-   template<typename ... T_PATHS>
-   class Switch final  {
-      static constexpr size_t Num_Of_Paths = sizeof...(T_PATHS);
-      static_assert(Num_Of_Paths >= 2, "should have at least 2 paths, or use __optional instead");
-      static_assert(Num_Of_Paths <= 20, "too much paths in one ___switch");
-
-      template<TransListenerObservedAids const& AIDs>
-      struct Trait {
-         template<typename ... Tss>
-         struct RealTypes  {
-            // for thread-resource-transfer
-            using ThreadActionCreator = ThreadCreator_t<Tss...>;
-            using Paths = VolatileSeq<ActionPath, Tss...>;
-         };
-
-         template<typename T>
-         using ToRealTypes = ActionRealTypeTraits<AIDs, T, void>;
-
-         using type = CUB_NS::Transform_t<ToRealTypes, RealTypes, T_PATHS...>;
-      };
-
-   public:
-      template<TransListenerObservedAids const& AIDs>
-      struct ActionRealType : SchedSwitchCase, Trait<AIDs>::type::Paths {
-         using ThreadActionCreator = typename Trait<AIDs>::type::ThreadActionCreator;
-      private:
-         SeqInt i = 0;
-         OVERRIDE(getNext()->ActionPath *) {
-            return Trait<AIDs>::type::Paths::get(i++);
-         }
-      };
+   private:
+      T_ACTION action;
+      PRED pred;
    };
 
-   template<typename ... Ts>
-   using Switch_t = typename Switch<Ts...>::template ActionRealType<EmptyAids>;
+   template <typename PRED, typename T_ACTION>
+   struct OPTIONAL__
+      : SWITCH__< CASE__<PRED, T_ACTION> >
+   {
+   };
 }
 
 TSL_NS_END
 
-#define __switch(...) TSL_NS::details::Switch<__VA_ARGS__>
-#define __def_switch(...) TSL_NS::details::Switch_t<__VA_ARGS__>
+//////////////////////////////////////////////////////////////////
+#define __switch(...) \
+       TSL_NS::details::SWITCH__< __VA_ARGS__ >
 
-#endif //TRANS_DSL_2_SWITCHCASEHELPER_H
+#define __case(...) \
+       TSL_NS::details::CASE__< __VA_ARGS__ >
+
+#define __optional(...) TSL_NS::details::OPTIONAL__< __VA_ARGS__ >
+
+//////////////////////////////////////////////////////////////////
+
+#endif /* SWITCHCASEHELPER_H_ */

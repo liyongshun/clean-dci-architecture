@@ -1,24 +1,28 @@
-//
-// Created by Darwin Yuan on 2020/6/10.
-//
+/*
+ * SimpleEventInfo.h
+ *
+ * Created on: Apr 23, 2013, 2013
+ *     author: Darwin Yuan
+ *
+ * Copyright 2013 ThoughtWorks, All Rights Reserved.
+ *
+ */ 
 
-#ifndef TRANS_DSL_2_SIMPLEEVENTINFO_H
-#define TRANS_DSL_2_SIMPLEEVENTINFO_H
+#ifndef SIMPLEEVENTINFO_H_
+#define SIMPLEEVENTINFO_H_
 
-#include <event/concept/EventInfo.h>
+#include <l4-infra/event/impl/BaseEventInfo.h>
 
 EV_NS_BEGIN
 
-struct SimpleEventInfo : EventInfo
+struct SimpleEventInfo : BaseEventInfo
 {
-   explicit SimpleEventInfo(const EventId eventId)
-      : EventInfo(eventId) {}
+   explicit SimpleEventInfo(const EventId eventId);
 
-   OVERRIDE(getMsg() const -> const void*) { return nullptr; }
-   OVERRIDE(getMsgSize() const -> size_t) { return 0; }
-   OVERRIDE(getSequenceNum() const             -> uint32_t) { return 0xFFFF'FFFF; }
+   OVERRIDE(const void* getMsg() const);
+   OVERRIDE(size_t getMsgSize() const);
 };
 
 EV_NS_END
 
-#endif //TRANS_DSL_2_SIMPLEEVENTINFO_H
+#endif /* SIMPLEEVENTINFO_H_ */

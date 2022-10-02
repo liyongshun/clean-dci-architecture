@@ -1,35 +1,33 @@
-//
-// Created by Darwin Yuan on 2020/6/15.
-//
+/*
+ * SafeHelper.h
+ *
+ * Created on: May 28, 2013
+ *     author: Darwin Yuan
+ *
+ * Copyright 2013 ThoughtWorks, All Rights Reserved.
+ *
+ */ 
 
-#ifndef TRANS_DSL_2_SAFEHELPER_H
-#define TRANS_DSL_2_SAFEHELPER_H
+#ifndef SAFEHELPER_H_
+#define SAFEHELPER_H_
 
-#include <trans-dsl/sched/action/SchedSafe.h>
-#include <trans-dsl/utils/ThreadActionTrait.h>
-#include <trans-dsl/sched/helper/AutoActionHelper.h>
-#include <trans-dsl/sched/helper/ActionRealTypeTraits.h>
+#include <l4-infra/trans-dsl/sched/action/SchedSafeAction.h>
 
 TSL_NS_BEGIN
 
-namespace details {
-   template<typename T_ACTION>
-   struct Safe {
-      template<TransListenerObservedAids const& AIDs>
-      class ActionRealType : public SchedSafe {
-         using Action = ActionRealTypeTraits_t<AIDs, T_ACTION>;
-         CONCEPT_ASSERT(SchedActionConcept<Action>);
-
-         IMPL_ROLE_WITH_VAR(SchedAction, action);
-         Action action;
-      public:
-         using ThreadActionCreator = ThreadCreator_t<Action>;
-      };
+namespace details
+{
+   template <typename T_ACTION>
+   struct SAFE__ : SchedSafeAction
+   {
+   private:
+      IMPL_ROLE_WITH_VAR(SchedAction, T_ACTION);
    };
-}
+};
 
 TSL_NS_END
 
-#define __safe(...) TSL_NS::details::Safe<TSL_NS::details::AutoAction::SequentialTrait_t<__VA_ARGS__>>
+////////////////////////////////////////////////////////////////////
+#define __safe(...) TSL_NS::details::SAFE__< __VA_ARGS__ >
 
-#endif //TRANS_DSL_2_SAFEHELPER_H
+#endif /* UNSTOPHELPER_H_ */

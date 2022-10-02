@@ -1,36 +1,31 @@
-//
-// Created by Darwin Yuan on 2020/6/6.
-//
+/*
+ * EventInfo.h
+ *
+ * Created on: Apr 23, 2013, 2013
+ *     author: Darwin Yuan
+ *
+ * Copyright 2013 ThoughtWorks, All Rights Reserved.
+ *
+ */ 
 
-#ifndef TRANS_DSL_2_EVENTINFO_H
-#define TRANS_DSL_2_EVENTINFO_H
+#ifndef EVENTINFO_H_
+#define EVENTINFO_H_
 
-#include <event/event_ns.h>
-#include <cub/dci/Role.h>
-#include <event/concept/EventId.h>
-#include <event/Status.h>
+#include <l4-infra/cub/base/Status.h>
+#include <l4-infra/cub/dci/Role.h>
+#include <l4-infra/event/concept/EventId.h>
 #include <cstddef>
 
 EV_NS_BEGIN
 
-DEFINE_ROLE(EventInfo) {
-   explicit EventInfo(const EventId eventId) : eventId(eventId) {}
-
-   auto getEventId() const -> EventId {
-      return eventId;
-   }
-   auto updateEventId(const EventId id) const -> void {
-      this->eventId = id;
-   }
-
-   ABSTRACT(getMsg() const                     -> const void*);
-   ABSTRACT(getMsgSize() const                 -> size_t);
-   ABSTRACT(getSequenceNum() const             -> uint32_t);
-
-private:
-   mutable EventId      eventId;
+DEFINE_ROLE(EventInfo)
+{
+   ABSTRACT(EventId getEventId() const);
+   ABSTRACT(const void* getMsg() const);
+   ABSTRACT(size_t getMsgSize() const);
+   ABSTRACT(cub::Status updateEventId(const EventId) const);
 };
 
 EV_NS_END
 
-#endif //TRANS_DSL_2_EVENTINFO_H
+#endif /* EVENTINFO_H_ */

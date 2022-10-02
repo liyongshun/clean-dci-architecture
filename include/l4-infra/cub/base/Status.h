@@ -1,50 +1,64 @@
-//
-// Created by Darwin Yuan on 2020/6/6.
-//
+#ifndef H5712E60C_DEF5_4A3B_93C0_C074CD80C63B
+#define H5712E60C_DEF5_4A3B_93C0_C074CD80C63B
 
-#ifndef TRANS_DSL_2_STATUS_H
-#define TRANS_DSL_2_STATUS_H
-
-#include <cub/cub_ns.h>
-#include <cstdint>
+#include <l4-infra/cub/base/BaseTypes.h>
+#include <l4-infra/cub/cub.h>
 
 CUB_NS_BEGIN
 
-using Status = uint32_t;
+typedef U32 Status;
 
-enum : uint32_t {
-   CUB_RESERVED_FAILURE = 0x80000000
+enum : Status
+{
+    CUB_RESERVED_FAILURE = 0x80000000
 };
 
-constexpr bool is_success_status(Status status)
+inline bool isSuccStatus(Status status)
 {
-   return (status & CUB_RESERVED_FAILURE) == 0;
+    return (status & CUB_RESERVED_FAILURE) == 0;
 }
 
-constexpr bool is_failed_status(Status status)
+inline bool isFailStatus(Status status)
 {
-   return !is_success_status(status);
+    return !isSuccStatus(status);
 }
 
-constexpr Status success_status(uint32_t status)
+inline constexpr Status succStatus(const U32 status)
 {
-   return status;
+    return status;
 }
 
-constexpr Status fail_status(uint32_t status)
+inline constexpr Status failStatus(const U32 status)
 {
-   return status | CUB_RESERVED_FAILURE;
+    return status | CUB_RESERVED_FAILURE;
 }
-
-enum Result: cub::Status
-{
-   SUCCESS   = cub::success_status(0),
-
-   FATAL_BUG = cub::fail_status(0x3FFFFFFE),
-   FAILURE   = cub::fail_status(0x3FFFFFFF),
-   FAILED    = FAILURE
-};
 
 CUB_NS_END
 
-#endif //TRANS_DSL_2_STATUS_H
+enum : CUB_NS::U16
+{
+    CUB_INVALID_U16 = 0xFFFF
+};
+
+enum : CUB_NS::U32
+{
+    CUB_INVALID_U32 = 0xFFFFFFFF
+};
+
+/////////////////////////////////////////////////////////////////
+
+enum CubStatus: cub::Status
+{
+    CUB_SUCCESS = cub::succStatus(0),
+
+    CUB_FATAL_BUG = cub::failStatus(0x7FFFFFFE),
+    CUB_FAILURE   = cub::failStatus(0x7FFFFFFF)
+};
+
+/////////////////////////////////////////////////////////////////
+#define __CUB_FAILED(result)   cub::isFailStatus(result)
+
+#define CUB_IS_SUCC_STATUS(status) cub::isSuccStatus(status)
+
+
+#endif

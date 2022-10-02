@@ -1,13 +1,18 @@
-//
-// Created by Darwin Yuan on 2020/6/6.
-//
+/*
+ * Event.h
+ *
+ * Created on: Apr 21, 2013, 2013
+ *     author: Darwin Yuan
+ *
+ * Copyright 2013 ThoughtWorks, All Rights Reserved.
+ *
+ */ 
 
-#ifndef TRANS_DSL_2_EVENT_H
-#define TRANS_DSL_2_EVENT_H
+#ifndef EVENT_H_
+#define EVENT_H_
 
-#include <event/concept/EventId.h>
-#include <event/Status.h>
-#include <event/concept/EventInfo.h>
+#include <l4-infra/cub/base/Status.h>
+#include <l4-infra/event/concept/EventId.h>
 #include <cstddef>
 
 EV_NS_BEGIN
@@ -17,59 +22,29 @@ struct EventInfo;
 struct Event
 {
    Event();
-   Event(const EventInfo& info) : info(&info) {}
+   Event(const EventInfo& info);
 
-   Event(const Event&) = delete;
-   Event(Event&&) = delete;
-   Event& operator=(const Event&) = delete;
-   Event& operator=(Event&&) = delete;
+   EventId getEventId() const;
+   const void* getMsg() const;
+   size_t getMsgSize() const;
 
-   auto getEventId() const -> EventId {
-      return info->getEventId();
-   }
+   bool matches(const EventId eventId) const;
 
-   auto getMsg() const     -> const void* {
-      return info->getMsg();
-   }
-
-   auto getMsgSize() const -> size_t {
-      return info->getMsgSize();
-   }
-
-   auto matches(EventId eventId) const -> bool {
-      return info->getEventId() == eventId;
-   }
-
-   auto updateEventId(EventId eventId) const -> void {
-      info->updateEventId(eventId);
-   }
-
-   auto assignEventInfoTo(Event& another) const -> void {
-      another.info = info;
-   }
-
-   auto getEventInfo() const -> const EventInfo&
+   cub::Status updateEventId(const EventId) const;
+   void assignEventInfoTo(Event&) const;
+   const EventInfo& getEventInfo() const
    {
-      return *info;
+       return *info;
    }
 
-   auto getSequenceNum() const -> uint32_t {
-       return info == nullptr ? 0xFFFF'FFFF : info->getSequenceNum();
-   }
-
-   auto consume() const    -> void {
-      consumed = true;
-   }
-
-   auto isConsumed() const -> bool {
-      return consumed;
-   }
+   void consume() const;
+   bool isConsumed() const;
 
 private:
-   const EventInfo* info = nullptr;
-   mutable bool consumed = false;
+   const EventInfo* info;
+   mutable bool consumed;
 };
 
 EV_NS_END
 
-#endif //TRANS_DSL_2_EVENT_H
+#endif /* EVENT_H_ */

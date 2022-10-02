@@ -1,23 +1,30 @@
-//
-// Created by Darwin Yuan on 2020/6/15.
-//
+/*
+ * ActionPath.h
+ *
+ * Created on: Apr 22, 2013
+ *     author: Darwin Yuan
+ *
+ * Copyright 2013 ThoughtWorks, All Rights Reserved.
+ *
+ */ 
 
-#ifndef TRANS_DSL_2_ACTIONPATH_H
-#define TRANS_DSL_2_ACTIONPATH_H
+#ifndef ACTIONPATH_H_
+#define ACTIONPATH_H_
 
-#include <trans-dsl/tsl_ns.h>
-#include <cub/dci/Role.h>
+#include <l4-infra/cub/dci/ListBasedRole.h>
+#include <l4-infra/trans-dsl/tsl.h>
 
 TSL_NS_BEGIN
 
 struct TransactionInfo;
 struct SchedAction;
 
-DEFINE_ROLE(ActionPath) {
-   ABSTRACT(shouldExecute(TransactionInfo const&) noexcept -> bool);
-   ABSTRACT(getAction() noexcept -> SchedAction&);
+DEFINE_ROLE(ActionPath) EXTENDS(CUB_NS::ListElem<ActionPath>)
+{
+   ABSTRACT(bool shouldExecute(const TransactionInfo&));
+   ABSTRACT(SchedAction& getAction());
 };
 
 TSL_NS_END
 
-#endif //TRANS_DSL_2_ACTIONPATH_H
+#endif /* ACTIONPATH_H_ */

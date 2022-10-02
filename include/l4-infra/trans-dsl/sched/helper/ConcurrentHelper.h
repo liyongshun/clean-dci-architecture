@@ -1,33 +1,33 @@
-//
-// Created by Darwin Yuan on 2020/6/13.
-//
+/*
+ * ConcurrentHelper.h
+ *
+ * Created on: Apr 22, 2013
+ *     author: Darwin Yuan
+ *
+ * Copyright 2013 ThoughtWorks, All Rights Reserved.
+ *
+ */ 
 
-#ifndef TRANS_DSL_2_CONCURRENTHELPER_H
-#define TRANS_DSL_2_CONCURRENTHELPER_H
+#ifndef CONCURRENTHELPER_H_
+#define CONCURRENTHELPER_H_
 
-#include <trans-dsl/sched/helper/MultiAction.h>
-#include <trans-dsl/sched/action/SchedConcurrent.h>
-#include <trans-dsl/sched/domain/TransListenerObservedAids.h>
+#include <l4-infra/trans-dsl/sched/action/SchedConcurrentAction.h>
+#include <l4-infra/trans-dsl/sched/helper/LinkedThreadHelper.h>
+#include <l4-infra/trans-dsl/sched/helper/VoidHelper.h>
 
-TSL_NS_BEGIN
+#ifdef __GXX_EXPERIMENTAL_CXX0X__
+#include <l4-infra/trans-dsl/sched/helper/11/Concurrent11.h>
+#else
+#include <l4-infra/trans-dsl/sched/helper/98/Concurrent98.h>
+#endif
 
-struct SchedAction;
+/////////////////////////////////////////////////////////////////////////////////
+#define __concurrent(...) \
+       TSL_NS::details::CONCURRENT__< __VA_ARGS__ >
 
-namespace details {
+#define __void_concurrent(...) \
+       TSL_NS::details::VOID_CONCURRENT__< __VA_ARGS__ >
 
-   template<typename ... T_ACTIONS>
-   struct Concurrent final  : MultiAction<SchedConcurrent, T_ACTIONS...>{
-      static constexpr size_t Num_Of_Actions = sizeof...(T_ACTIONS);
-      static_assert(Num_Of_Actions >= 2, "# of concurrent actions should be at least 2");
-   };
+/////////////////////////////////////////////////////////////////////////////////
 
-   template<typename ... Ts>
-   using Concurrent_t = typename Concurrent<Ts...>::template ActionRealType<EmptyAids>;
-}
-
-#define __concurrent(...) TSL_NS::details::Concurrent<__VA_ARGS__>
-#define __def_concurrent(...) TSL_NS::details::Concurrent_t<__VA_ARGS__>
-
-TSL_NS_END
-
-#endif //TRANS_DSL_2_CONCURRENTHELPER_H
+#endif /* CONCURRENTHELPER_H_ */

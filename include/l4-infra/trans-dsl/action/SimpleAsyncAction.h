@@ -1,22 +1,42 @@
-//
-// Created by Darwin Yuan on 2020/6/9.
-//
+/*
+ * SimpleAsyncAction.h
+ *
+ * Created on: Apr 29, 2013
+ *     author: Darwin Yuan
+ *
+ * Copyright 2013 ThoughtWorks, All Rights Reserved.
+ *
+ */ 
 
-#ifndef TRANS_DSL_2_SIMPLEASYNCACTION_H
-#define TRANS_DSL_2_SIMPLEASYNCACTION_H
+#ifndef SIMPLEASYNCACTION_H_
+#define SIMPLEASYNCACTION_H_
 
-#include <trans-dsl/action/SingleEventAsyncAction.h>
-#include <trans-dsl/action/MsgHandlerTrait.h>
+#include <l4-infra/trans-dsl/action/Action.h>
+#include <l4-infra/trans-dsl/utils/EventHandlerRegistry.h>
 
 TSL_NS_BEGIN
 
-struct TransactionInfo;
+struct SimpleAsyncAction: Action
+{
+   OVERRIDE(cub::Status handleEvent(const TransactionInfo&, const ev::Event&));
+   OVERRIDE(void kill(const TransactionInfo&, const cub::Status));
 
-class SimpleAsyncAction : public SingleEventAsyncAction {};
+   template<typename T>
+   cub::Status waitOn(const ev::EventId eventId, T* thisPointer,
+		   cub::Status (T::*handler)(const TransactionInfo&, const ev::Event&), bool forever = false)
+   {
+      return registry.addHandler(eventId, thisPointer, handler, forever);
+   }
 
-#define DEF_SIMPLE_ASYNC_ACTION(action) \
-struct action : TSL_NS::SimpleAsyncAction
+   cub::Status waitUntouchEvent(const ev::EventId eventId);
+
+private:
+   EventHandlerRegistry registry;
+
+private:
+   DEFAULT(void, doKill(const TransactionInfo&, const cub::Status));
+};
 
 TSL_NS_END
 
-#endif //TRANS_DSL_2_SIMPLEASYNCACTION_H
+#endif /* SIMPLEASYNCACTION_H_ */
