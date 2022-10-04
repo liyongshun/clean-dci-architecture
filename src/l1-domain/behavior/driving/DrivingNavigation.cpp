@@ -7,7 +7,7 @@ Status DrivingNavigation::execute()
 {
     I(Copilot).navigate();
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 
 CDA_NS_END

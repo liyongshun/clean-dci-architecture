@@ -7,13 +7,13 @@ Status ConcreteCarDriver::drive()
 {
     std::cout << "CarDriver Driving..." << std::endl;
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 Status ConcreteCarDriver::park()
 {
     std::cout << "CarDriver Parking..." << std::endl;
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 
 CDA_NS_END

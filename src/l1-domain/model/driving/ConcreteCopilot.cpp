@@ -7,13 +7,13 @@ Status ConcreteCopilot::routePlan()
 {
     std::cout << "Copilot Route Planning..." << std::endl;
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 Status ConcreteCopilot::navigate()
 {
     std::cout << "Copilot Navigating..." << std::endl;
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 
 CDA_NS_END

@@ -1,6 +1,6 @@
 #include "l2-use-case/context/tdd/TddTestAction.h"
 #include "l1-domain/interface/Instance.h"
-#include "l4-infra/trans-dsl/sched/concept/TransactionInfo.h"
+#include <trans-dsl/action/TransactionInfo.h>
 #include "l1-domain/interface/tdd/TddInf.h"
 #include "l1-domain/behavior/tdd/WriteAFailingTest.h"
 #include "l1-domain/behavior/tdd/SendTestCompletedInd.h"
@@ -8,12 +8,12 @@
 
 CDA_NS_BEGIN
 
-Status TddTestAction::exec(const TransactionInfo& trans)
+auto TddTestAction::operator()(TransactionInfo const& trans) -> Status
 {
     TRANS_TO_ROLE(TddInf).B(WriteAFailingTest).execute();
     TRANS_TO_ROLE(TddInf).B(SendTestCompletedInd).execute();
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 
 CDA_NS_END

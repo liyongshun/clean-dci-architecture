@@ -2,15 +2,16 @@
 #define INCL_CDA_INCLUDE_STARTTDDACTION_H_
 
 #include "l4-infra/cda.h"
-#include "l4-infra/trans-dsl/action/SyncAction.h"
+#include <trans-dsl/tsl_status.h>
 
+FWD_DECL_TSL(TransactionInfo);
 USING_TSL_NS
 
 CDA_NS_BEGIN
 
-struct TddStartAction : SyncAction
+struct TddStartAction
 {
-    OVERRIDE(Status exec(const TransactionInfo&));
+   auto operator()(TransactionInfo const&) -> Status;
 };
 
 CDA_NS_END

@@ -2,8 +2,8 @@
 #define INCL_INCLUDE_TDDOBSERVER_H_
 
 #include "l4-infra/cda.h"
-#include "l4-infra/cub/dci/fractal.h"
-#include "l4-infra/cub/base/Status.h"
+#include "cub/dci/fractal.h"
+#include "trans-dsl/tsl_status.h"
 
 CDA_NS_BEGIN
 

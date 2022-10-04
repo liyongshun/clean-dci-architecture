@@ -1,6 +1,8 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.22 )
+CMAKE_MINIMUM_REQUIRED(VERSION 3.17)
 
-PROJECT(clean-dci-arch VERSION 1.0.0 LANGUAGES CXX)
+PROJECT("clean-dci-arch")
+
+set(CMAKE_CXX_STANDARD 17)
 
 MACRO(sort_files source_files)
     SET(sgbd_cur_dir ${CMAKE_CURRENT_SOURCE_DIR})
@@ -30,9 +32,12 @@ IF(MSVC)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /vmg")
 ENDIF(MSVC)
 
-IF(UNIX)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-ENDIF(UNIX)
+if(UNIX)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wnon-virtual-dtor \
+      -Wcast-align -Wunused -Woverloaded-virtual -Wconversion \
+      -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 \
+      -Wno-invalid-offsetof ")
+endif()
 
 FILE(GLOB_RECURSE all_files 
 include/*.h
@@ -60,4 +65,5 @@ link_directories("${CMAKE_CURRENT_SOURCE_DIR}/3th/lib")
 
 add_executable(clean-dci-arch ${all_files})
 
-target_link_libraries(clean-dci-arch trans-dsl gtest pthread stdc++)
+target_link_libraries(clean-dci-arch gtest trans-dsl-2 pthread stdc++)
+

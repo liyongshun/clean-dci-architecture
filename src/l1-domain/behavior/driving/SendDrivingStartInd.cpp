@@ -7,7 +7,7 @@ Status SendDrivingStartInd::execute()
 {
     std::cout << "Send EV_DRIVING_START_IND" << std::endl;
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 
 CDA_NS_END

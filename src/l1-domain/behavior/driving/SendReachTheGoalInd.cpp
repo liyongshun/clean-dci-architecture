@@ -7,7 +7,7 @@ Status SendReachTheGoalInd::execute()
 {
     std::cout << "Send EV_REACH_THE_GOAL_IND" << std::endl;
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 
 CDA_NS_END

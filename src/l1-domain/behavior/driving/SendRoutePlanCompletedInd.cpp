@@ -7,7 +7,7 @@ Status SendRoutePlanCompletedInd::execute()
 {
     std::cout << "Send EV_ROUTE_PLAN_COMPLETED_IND" << std::endl;
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 
 CDA_NS_END

@@ -7,13 +7,13 @@ Status ConcretePairObserver::design()
 {
     std::cout << "PairObserver Designing..." << std::endl;
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 Status ConcretePairObserver::test()
 {
     std::cout << "PairObserver Testing..." << std::endl;
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 
 CDA_NS_END

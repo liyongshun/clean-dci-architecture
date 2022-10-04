@@ -2,7 +2,7 @@
 #define INCL_CDA_INCLUDE_L1_DOMAIN_INTERFACE_DRIVINGINF_H_
 
 #include "l4-infra/cda.h"
-#include "l4-infra/cub/dci/fractal.h"
+#include "cub/dci/fractal.h"
 
 CDA_NS_BEGIN
 

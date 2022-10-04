@@ -2,7 +2,7 @@
 #define INCL_CDA_INCLUDE_L1_DOMAIN_INTERFACE_TDDMSG_H_
 
 #include "l4-infra/cda.h"
-#include "l4-infra/event/concept/EventId.h"
+#include "event/concept/EventId.h"
 
 using ev::EventId;
 

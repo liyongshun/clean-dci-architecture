@@ -7,7 +7,7 @@ Status StartDriving::execute()
 {
     I(CarDriver).drive();
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 
 CDA_NS_END

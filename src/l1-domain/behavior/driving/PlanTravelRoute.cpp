@@ -7,7 +7,7 @@ Status PlanTravelRoute::execute()
 {
     I(Copilot).routePlan();
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 
 CDA_NS_END

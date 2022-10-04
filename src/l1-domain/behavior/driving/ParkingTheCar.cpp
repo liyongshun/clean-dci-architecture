@@ -7,7 +7,7 @@ Status ParkingTheCar::execute()
 {
     I(CarDriver).park();
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 
 CDA_NS_END

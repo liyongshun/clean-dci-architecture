@@ -8,7 +8,7 @@ Status ImproveCodeQuality::execute()
 {
     I(PairInf).I(PairDriver).refactor();
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 
 CDA_NS_END

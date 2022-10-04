@@ -2,19 +2,16 @@
 #define INCL_CDA_INCLUDE_TDDENDACTION_H_
 
 #include "l4-infra/cda.h"
-#include "l4-infra/trans-dsl/action/SimpleAsyncActionHelper.h"
+#include "trans-dsl/action/SimpleAsyncAction.h"
 
+FWD_DECL_TSL(TransactionInfo);
 USING_TSL_NS
 
 CDA_NS_BEGIN
 
-struct RefactorCompletedInd;
-
 DEF_SIMPLE_ASYNC_ACTION(TddEndAction)
 {
-    OVERRIDE(Status exec(const TransactionInfo&));
-
-    ACTION_SIMPLE_EVENT_HANDLER_DECL(handleRefactorCompletedInd, RefactorCompletedInd);
+    auto exec(TransactionInfo const&) -> TSL_NS::Status;
 };
 
 CDA_NS_END

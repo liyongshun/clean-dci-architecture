@@ -1,5 +1,4 @@
 #include "l1-domain/interface/Instance.h"
-#include "l4-infra/cub/base/BaseTypes.h"
 #include "l1-domain/model/tdd/Tdd.h"
 #include "l1-domain/model/driving/Driving.h"
 
@@ -15,7 +14,7 @@ struct InstanceImpl : Instance
 
 namespace
 {
-    const U8 MAX_INST_NUM = 5;
+    const int MAX_INST_NUM = 5;
     InstanceImpl inst[MAX_INST_NUM];
 }
 

@@ -9,7 +9,7 @@ Status WriteAFailingTest::execute()
     I(PairInf).I(PairObserver).design();
     I(PairInf).I(PairObserver).test();
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 
 CDA_NS_END

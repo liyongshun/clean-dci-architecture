@@ -2,8 +2,8 @@
 #define INCL_CDA_INCLUDE_INSTANCE_H_
 
 #include "l4-infra/cda.h"
-#include "l4-infra/cub/dci/fractal.h"
-#include "l4-infra/trans-dsl/sched/concept/InstanceId.h"
+#include "cub/dci/fractal.h"
+#include "trans-dsl/sched/domain/InstanceId.h"
 
 using tsl::InstanceId;
 
@@ -26,6 +26,6 @@ DEF_I(Instance)
 CDA_NS_END
 
 #define TRANS_TO_ROLE(role) \
-    Instance::getInstance(trans.getInstanceId()).get##role()
+    Instance::getInstance(trans.getInstanceId()).__dci_get##role()
 
 #endif

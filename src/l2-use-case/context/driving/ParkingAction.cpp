@@ -1,6 +1,5 @@
 #include "l2-use-case/context/drving/ParkingAction.h"
-#include "l4-infra/event/concept/Event.h"
-#include "l4-infra/trans-dsl/sched/concept/TransactionInfo.h"
+#include "trans-dsl/action/TransactionInfo.h"
 #include "l1-domain/interface/Instance.h"
 #include "l1-domain/interface/driving/DrivingMsg.h"
 #include "l1-domain/interface/driving/DrivingInf.h"
@@ -9,19 +8,14 @@
 
 CDA_NS_BEGIN
 
-Status ParkingAction::exec(const TransactionInfo&)
+auto ParkingAction::exec(TransactionInfo const&) -> TSL_NS::Status
 {
-   WAIT_ON(EV_REACH_THE_GOAL_IND, handleReachTheGoalInd);
+    return WAIT_ON(EV_REACH_THE_GOAL_IND, MSG_HANDLER(ReachTheGoalInd) {
+        std::cout << "Received EV_REACH_THE_GOAL_IND " << std::endl;
+        TRANS_TO_ROLE(DrivingInf).B(ParkingTheCar).execute();
 
-   return CUB_CONTINUE;
-}
-
-ACTION_SIMPLE_EVENT_HANDLER_DEF(ParkingAction, handleReachTheGoalInd, ReachTheGoalInd)
-{
-    std::cout << "Received EV_REACH_THE_GOAL_IND " << std::endl;
-    TRANS_TO_ROLE(DrivingInf).B(ParkingTheCar).execute();
-
-    return CUB_SUCCESS;
+        return Result::SUCCESS;
+    });
 }
 
 CDA_NS_END

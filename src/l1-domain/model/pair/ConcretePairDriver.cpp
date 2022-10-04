@@ -7,13 +7,13 @@ Status ConcretePairDriver::coding()
 {
     std::cout << "PairDriver Coding..." << std::endl;
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 Status ConcretePairDriver::refactor()
 {
     std::cout << "PairDriver Refactoring..." << std::endl;
 
-    return CUB_SUCCESS;
+    return Result::SUCCESS;
 }
 
 CDA_NS_END
