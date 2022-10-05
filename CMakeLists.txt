@@ -1,6 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.17)
 
-PROJECT("clean-dci-arch")
+project(
+  clean-dci-arch
+  VERSION 1.0
+  LANGUAGES CXX
+)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -20,6 +24,8 @@ MACRO(sort_files source_files)
     ENDFOREACH(sgbd_file)
 ENDMACRO(sort_files)
 
+# include(cmake/CPM.cmake)
+
 INCLUDE_DIRECTORIES( 
 "${CMAKE_CURRENT_SOURCE_DIR}/include"
 "${CMAKE_CURRENT_SOURCE_DIR}/test"
@@ -33,37 +39,35 @@ IF(MSVC)
 ENDIF(MSVC)
 
 if(UNIX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wnon-virtual-dtor \
-      -Wcast-align -Wunused -Woverloaded-virtual -Wconversion \
-      -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 \
-      -Wno-invalid-offsetof ")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 endif()
 
-FILE(GLOB_RECURSE all_files 
-include/*.h
-include/*.hpp
-include/*.hxx
-include/*.tcc
-src/*.cpp
-src/*.cc
-src/*.cxx
-src/*.c
-src/*.C
-test/*.h
-test/*.hpp
-test/*.hxx
-test/*.tcc
-test/*.cpp
-test/*.cc
-test/*.cxx
-test/*.c
-test/*.C)
+file(GLOB_RECURSE headers CONFIGURE_DEPENDS 
+"${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
 
-sort_files(all_files)
+file(GLOB_RECURSE sources CONFIGURE_DEPENDS 
+"${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+
+
+file(GLOB_RECURSE tests CONFIGURE_DEPENDS 
+"${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp")
+
+sort_files(headers)
+sort_files(sources)
 
 link_directories("${CMAKE_CURRENT_SOURCE_DIR}/3th/lib")
 
-add_executable(clean-dci-arch ${all_files})
+add_library(${PROJECT_NAME} STATIC ${headers} ${sources})
+# set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 
-target_link_libraries(clean-dci-arch gtest trans-dsl-2 pthread stdc++)
+add_executable("${PROJECT_NAME}_test" ${tests})
 
+if(MSVC80)
+    target_link_libraries(${PROJECT_NAME} trans-dsl-2 gtest-vc80)
+elseif(MSVC90)
+    target_link_libraries(${PROJECT_NAME} trans-dsl-2 gtest-vc90)
+elseif(MSVC10)
+    target_link_libraries(${PROJECT_NAME} trans-dsl-2 gtest-vc10)
+else(UNIX)
+    target_link_libraries("${PROJECT_NAME}_test" ${PROJECT_NAME} gtest trans-dsl-2 pthread stdc++)
+endif(MSVC80)

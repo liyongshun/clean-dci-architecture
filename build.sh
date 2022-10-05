@@ -33,7 +33,7 @@ fi
 echo "*******************************************************************************"
 echo "start run tests..."
 
-./clean-dci-arch --gtest_color=yes $1 $2
+./clean-dci-arch_test --gtest_color=yes $1 $2
 
 if [ $? -ne 0 ]; then
     echo "build ${working_path} fail"
